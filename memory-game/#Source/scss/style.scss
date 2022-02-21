@@ -46,6 +46,7 @@ body {
    // .header__moves
 
    &__moves {
+      width: 200px;
       margin: 0px 20px 0px 0px;
       filter: drop-shadow(0px 0px 20px rgb(255, 0, 0));
    }
@@ -53,6 +54,7 @@ body {
    // .header__time
 
    &__time {
+      width: 200px;
       margin: 0px 20px 0px 0px;
       filter: drop-shadow(0px 0px 20px rgb(255, 0, 0));
    }
@@ -76,6 +78,9 @@ body {
    &:hover {
       filter: drop-shadow(0px 0px 30px rgb(255, 0, 0));
    }
+}
+.time {
+   margin: 0px 0px 0px 10px;
 }
 /*------------------------------------------------------------*/
 .main {
@@ -149,6 +154,51 @@ body {
    z-index: -10;
    transform: rotateY(180deg);
 }
+/*------------------------------------------------------------*/
+.main {
+   &__controls {
+      display: flex;
+      margin: 25px 0px;
+      font-size: 1.4rem;
+      & a {
+         text-decoration: none;
+         color: #ffffff;
+         filter: drop-shadow(0px 0px 2px rgb(0, 0, 0));
+         &:hover {
+            filter: drop-shadow(0px 0px 5px rgb(255, 0, 0));
+         }
+      }
+   }
+
+   // .main__score
+
+   &__score {
+      flex: 0 1 50%;
+      text-align: end;
+      margin: 0px 25px;
+   }
+
+   // .main__reset
+
+   &__reset {
+      flex: 0 1 50%;
+      text-align: start;
+      margin: 0px 25px;
+   }
+}
+.score {
+   // .score__btn
+
+   &__btn {
+   }
+}
+.reset {
+   // .reset__btn
+
+   &__btn {
+   }
+}
+
 /*------------------------------------------------------------*/
 .footer {
    &__items {

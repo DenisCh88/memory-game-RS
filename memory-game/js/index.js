@@ -57,7 +57,7 @@ const flipCard = (event) =>{
 /*-------------------------------match cards-----------------------------------------*/
 const checkForMatch = () =>{
 	let isMatch = firstCard.dataset.image === secondCard.dataset.image
-	console.log(hasFlippedCard)
+
 	isMatch ? disableCards() : unFlipCards()
 }
 
@@ -83,7 +83,62 @@ const resetBoard = () =>{
 }
 
 cards.forEach( card => card.addEventListener('click', flipCard))
-/*------------------------------------------------------------------------*/
+/*----------------------------------timer--------------------------------------*/
+const timer = document.querySelector('.time');
 
+let gameStart = false;
+let sec = 0;
+let min = 0;
+let seconds_str = '';
+let minutes_str = '';
 
+const startGame = () =>{
+	sec = 0;
+	min = 0;
+	seconds_str = '';
+	minutes_str = '';
+	timer.innerHTML = '00:00';
 
+	if(!gameStart){
+		gameStart = true
+		cards.forEach( card => card.removeEventListener('click',startGame))
+	}
+	if(gameStart){
+		timerOn()
+		setInterval(() => {
+			timerOn()
+		}, 1000)
+	}
+}
+
+const tick = () => {
+	sec++;
+	if (sec >= 60) {
+		 sec = 0;
+		 min++;
+		 if (min >= 60) {
+			  min = 0;
+		 }
+	}
+}
+
+const timerOn = () =>{
+	tick()
+
+	seconds_str = sec > 9 ? `${sec}` : `0${sec}`;
+	minutes_str = min > 9 ? `${min}` : `0${min}`;
+	timer.innerHTML = `${minutes_str}:${seconds_str}`;
+}
+
+cards.forEach( card => card.addEventListener('click',startGame))
+/*----------------------------------moves counter--------------------------------------*/
+const moves = document.querySelector('.moves');
+
+const movesCounter = () => {
+	if(!hasFlippedCard){
+		hasFlippedCard = true
+		console.log(hasFlippedCard = true);
+		
+	}
+}
+cards.forEach( card => card.addEventListener('click',movesCounter))
