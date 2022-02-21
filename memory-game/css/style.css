@@ -194,13 +194,15 @@ body {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  -webkit-perspective: 1000px;
+          perspective: 1000px;
 }
 .main__card {
   width: 6rem;
   margin: 1rem;
   -webkit-box-shadow: 0px 0px 15px black;
           box-shadow: 0px 0px 15px black;
-  overflow: hidden;
+  border: 2px solid #000000;
   border-radius: 5px;
   position: relative;
   display: block;
@@ -208,8 +210,12 @@ body {
   cursor: pointer;
   -webkit-transform: scale(1);
           transform: scale(1);
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 0.5s;
+  transition: -webkit-transform 0.5s;
+  transition: transform 0.5s;
+  transition: transform 0.5s, -webkit-transform 0.5s;
 }
 .main__card img {
   position: absolute;
@@ -223,6 +229,7 @@ body {
 .main__card:hover {
   -webkit-box-shadow: 0px 0px 20px red;
           box-shadow: 0px 0px 20px red;
+  border: 2px solid #ff0000;
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
   -webkit-transition: all 0.3s;
@@ -234,8 +241,29 @@ body {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
+.main__card.flip {
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+  border: 2px solid #ff0000;
+  -webkit-box-shadow: 0px 0px 20px red;
+          box-shadow: 0px 0px 20px red;
+}
+
 .image__display-none {
   display: none;
+}
+
+.front-face,
+.back-face {
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+
+.front-face {
+  position: relative;
+  z-index: -10;
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
 }
 
 /*------------------------------------------------------------*/
