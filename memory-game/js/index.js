@@ -1,5 +1,9 @@
 /*------------------------------cards------------------------------------------*/
-const cards = document.querySelectorAll('.main__card')
+const cards = document.querySelectorAll('.main__card');
+const timer = document.querySelector('.time');
+const moves = document.querySelector('.moves');
+const win = document.querySelector('.win');
+const body = document.querySelector('body');
 
 const randomEighteen = () => {
 	let arr1 = [],
@@ -38,10 +42,12 @@ window.addEventListener('load', createCards(randomEighteen()))
 let hasFlippedCard = false;
 let firstCard,
 	 secondCard;
+let move = 0;
+let moveCount;
 
 const flipCard = (event) =>{
 	event.currentTarget.classList.add('flip')
-
+	
 	if(!hasFlippedCard){
 		hasFlippedCard = true;
 		firstCard = event.currentTarget;
@@ -55,16 +61,48 @@ const flipCard = (event) =>{
 	}
 }
 /*-------------------------------match cards-----------------------------------------*/
+let winCount = 0;
+let gameWin = false;
+let winDisplay = 0;
+let winCounting;
+moves.innerHTML = '00';
+
 const checkForMatch = () =>{
 	let isMatch = firstCard.dataset.image === secondCard.dataset.image
 
 	isMatch ? disableCards() : unFlipCards()
+
+	moveCounter()
+
+	if (isMatch){
+		winCount++
+	}
+	gameWins()
+}
+
+const moveCounter = () =>{
+	move++
+	moveCount = move > 9 ? `${move}` : `0${move}`
+	moves.innerHTML = `${moveCount}`;
+}
+
+const gameWins = () =>{
+	if(winCount === 9){
+		gameWin = true;
+	}
+	if (gameWin){
+		winDisplay++
+		winCounting = winDisplay > 9 ? `${winDisplay}` : `0${winDisplay}`
+		win.innerHTML = `${winCounting}`;
+		body.classList.add('game-win')
+	}
 }
 
 const disableCards = () =>{
 	firstCard.removeEventListener('click', flipCard)
 	secondCard.removeEventListener('click', flipCard)
 	resetBoard()
+	
 }
 
 const unFlipCards = () =>{
@@ -84,8 +122,6 @@ const resetBoard = () =>{
 
 cards.forEach( card => card.addEventListener('click', flipCard))
 /*----------------------------------timer--------------------------------------*/
-const timer = document.querySelector('.time');
-
 let gameStart = false;
 let sec = 0;
 let min = 0;
@@ -93,21 +129,25 @@ let seconds_str = '';
 let minutes_str = '';
 
 const startGame = () =>{
-	sec = 0;
-	min = 0;
-	seconds_str = '';
-	minutes_str = '';
 	timer.innerHTML = '00:00';
 
+	if (body.classList.contains('game-win')){
+		body.classList.remove('game-win')
+	}
 	if(!gameStart){
 		gameStart = true
 		cards.forEach( card => card.removeEventListener('click',startGame))
 	}
 	if(gameStart){
 		timerOn()
-		setInterval(() => {
+		let timer = setInterval(() => {
 			timerOn()
 		}, 1000)
+		setInterval(() => {
+			if(body.classList.contains('game-win')){ 
+				clearTimeout(timer);
+			}
+		},)
 	}
 }
 
@@ -131,14 +171,36 @@ const timerOn = () =>{
 }
 
 cards.forEach( card => card.addEventListener('click',startGame))
-/*----------------------------------moves counter--------------------------------------*/
-const moves = document.querySelector('.moves');
+/*-----------------------------reset-------------------------------------------*/
+const reset = document.querySelector('.reset__btn')
 
-const movesCounter = () => {
-	if(!hasFlippedCard){
-		hasFlippedCard = true
-		console.log(hasFlippedCard = true);
-		
-	}
+const resetGame = () =>{
+	body.classList.add('game-win')
+	cards.forEach( card => card.classList.remove('flip'))
+
+	sec = 0;
+	min = 0;
+	move = 0;
+	winCount = 0;
+	timer.innerHTML = '00:00';
+	moves.innerHTML = '00';
+ 	gameWin = false;
+	gameStart = false;
+	firstCard = null;
+	secondCard = null;
+	cards.forEach( card => card.addEventListener('click',startGame))
+	cards.forEach( card => card.addEventListener('click', flipCard))
+
+	setTimeout(()=>{
+		createCards(randomEighteen())
+	}, 250)
 }
-cards.forEach( card => card.addEventListener('click',movesCounter))
+
+reset.addEventListener('click', resetGame)
+/*-----------------------------score-------------------------------------------*/
+const score = document.querySelector('.score__btn')
+
+score.addEventListener('click', ()=> {
+	alert('Sorry... Score is in progress. Please, try again later..')
+})
+
