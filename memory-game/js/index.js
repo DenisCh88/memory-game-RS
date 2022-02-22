@@ -175,8 +175,13 @@ cards.forEach( card => card.addEventListener('click',startGame))
 const reset = document.querySelector('.reset__btn')
 
 const resetGame = () =>{
+	const card = document.querySelector('.front-face');
 	body.classList.add('game-win')
 	cards.forEach( card => card.classList.remove('flip'))
+	setTimeout(()=>{
+		card.remove()
+	}, 250)
+	
 
 	sec = 0;
 	min = 0;
@@ -203,4 +208,56 @@ const score = document.querySelector('.score__btn')
 score.addEventListener('click', ()=> {
 	alert('Sorry... Score is in progress. Please, try again later..')
 })
+/*-----------------------------sound-------------------------------------------*/
+let audio = new Audio(); 
+audio.autoplay =false;
+
+const sound = () => {
+	cards.forEach( card => card.removeEventListener('click',sound))
+
+	volume.src = 'source/icon/mic/volume.png'
+	audio.src = 'source/sound/theme_song.mp3';
+	audio.volume = 0.2;
+	audio.autoplay = true;
+	audio.loop = true;
+	audio.muted = false;
+	
+	audioHover.muted = false
+}
+
+cards.forEach( card => card.addEventListener('click',sound))
+/*-----------------------------mute-------------------------------------------*/
+const volume= document.querySelector('.button__image');
+
+const mute = () =>{
+	if(!audio.muted){
+		audio.muted = true
+		audioHover.muted = true
+		volume.src = 'source/icon/mic/volume-mute.png'
+	} else if(audio.muted){
+		audio.muted = false
+		audioHover.muted = false
+		volume.src = 'source/icon/mic/volume.png'
+	}
+	if(!audio.autoplay){
+		sound()
+	}
+}
+
+volume.addEventListener('click', mute)
+/*-----------------------------sound hover-------------------------------------------*/
+let audioHover = new Audio(); 
+audioHover.muted = true
+
+const hover = (event) => {
+	audioHover.src = 'source/sound/hover.mp3';
+	if(!event.currentTarget.classList.contains('flip')){
+		setTimeout(() =>{
+			audioHover.play()
+		}, 100)
+		audioHover.volume = 0.8
+	}
+}
+
+cards.forEach( card => card.addEventListener('mouseenter',hover))
 
