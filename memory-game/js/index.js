@@ -4,6 +4,20 @@ const timer = document.querySelector('.time');
 const moves = document.querySelector('.moves');
 const win = document.querySelector('.win');
 const body = document.querySelector('body');
+let getWinCount = localStorage.getItem('win');
+const scoreItems = document.querySelectorAll('.table__item');
+
+const createScote = () =>{
+	if (localStorage.getItem(`key01`) !== null){
+		for (let i = 0; i < localStorage.getItem(`win`); i++){
+			let scoreItem = JSON.parse(localStorage.getItem(`key0${i + 1}`));
+
+			scoreItems[i].innerHTML = `Time: ${scoreItem.Time} | Date: ${scoreItem.Date} | Moves: ${scoreItem.Moves}`;
+			console.log(scoreItem.Time)
+		}
+	}
+}
+
 
 const randomEighteen = () => {
 	let arr1 = [],
@@ -22,8 +36,8 @@ const randomEighteen = () => {
 		arr2.push(num)
 	  }
 	 }
- 
-	return res = arr1.concat(arr2)
+	createScote()
+	return res = arr1.concat(arr2);
  }
 
 const createCards = (el) =>{
@@ -35,6 +49,7 @@ for(let i = 0; i < el.length; i++){
 	cards[i].append(card);
 	cards[i].setAttribute('data-image', `${el[i]}`);
 	}
+	win.innerHTML = getWinCount === null ? '00' : `${localStorage.getItem('win')}`;
 }
 
 window.addEventListener('load', createCards(randomEighteen()))
@@ -63,7 +78,7 @@ const flipCard = (event) =>{
 /*-------------------------------match cards-----------------------------------------*/
 let winCount = 0;
 let gameWin = false;
-let winDisplay = 0;
+let winDisplay = getWinCount === null ? '00' : `${getWinCount}`;
 let winCounting;
 moves.innerHTML = '00';
 
@@ -95,6 +110,10 @@ const gameWins = () =>{
 		winCounting = winDisplay > 9 ? `${winDisplay}` : `0${winDisplay}`
 		win.innerHTML = `${winCounting}`;
 		body.classList.add('game-win')
+		if(scoreStrings[0].classList.contains('table__item')){
+			clearTable()
+		}
+		createScore()
 	}
 }
 
@@ -109,11 +128,11 @@ const unFlipCards = () =>{
 	cards.forEach( card => card.removeEventListener('click', flipCard))
 	setTimeout(() => {
 		cards.forEach( card => card.addEventListener('click', flipCard))
-	}, 1000)
+	}, 400)
 	setTimeout(() => {
 		firstCard.classList.remove('flip')
 		secondCard.classList.remove('flip')
-	}, 1000)
+	}, 400)
 }
 
 const resetBoard = () =>{
@@ -134,6 +153,9 @@ const startGame = () =>{
 	if (body.classList.contains('game-win')){
 		body.classList.remove('game-win')
 	}
+	if (body.classList.contains('game-reset')){
+		body.classList.remove('game-reset')
+	}
 	if(!gameStart){
 		gameStart = true
 		cards.forEach( card => card.removeEventListener('click',startGame))
@@ -145,6 +167,9 @@ const startGame = () =>{
 		}, 1000)
 		setInterval(() => {
 			if(body.classList.contains('game-win')){ 
+				clearTimeout(timer);
+			}
+			if(body.classList.contains('game-reset')){ 
 				clearTimeout(timer);
 			}
 		},)
@@ -176,38 +201,39 @@ const reset = document.querySelector('.reset__btn')
 
 const resetGame = () =>{
 	const card = document.querySelector('.front-face');
-	body.classList.add('game-win')
+
+	body.classList.add('game-reset')
 	cards.forEach( card => card.classList.remove('flip'))
 	setTimeout(()=>{
 		card.remove()
 	}, 250)
 	
-
 	sec = 0;
 	min = 0;
 	move = 0;
-	winCount = 0;
 	timer.innerHTML = '00:00';
 	moves.innerHTML = '00';
- 	gameWin = false;
-	gameStart = false;
 	firstCard = null;
 	secondCard = null;
 	cards.forEach( card => card.addEventListener('click',startGame))
 	cards.forEach( card => card.addEventListener('click', flipCard))
 
-	setTimeout(()=>{
-		createCards(randomEighteen())
-	}, 250)
+	if (localStorage.getItem('win') === null){
+		win.innerHTML = '00'
+	} else {
+		win.innerHTML = `${localStorage.getItem("win")}`
+	}
+	console.log(`${localStorage.getItem('win')}`)
+
+	if (body.classList.contains('game-win')){
+		body.classList.remove('game-win')
+	}
+	winStringPending()
+	createCards(randomEighteen())
 }
 
-reset.addEventListener('click', resetGame)
-/*-----------------------------score-------------------------------------------*/
-const score = document.querySelector('.score__btn')
 
-score.addEventListener('click', ()=> {
-	alert('Sorry... Score is in progress. Please, try again later..')
-})
+reset.addEventListener('click', resetGame)
 /*-----------------------------sound-------------------------------------------*/
 let audio = new Audio(); 
 audio.autoplay =false;
@@ -260,4 +286,63 @@ const hover = (event) => {
 }
 
 cards.forEach( card => card.addEventListener('mouseenter',hover))
+/*-----------------------------score-------------------------------------------*/
+const now = new Date()
+const year = now.getFullYear()
+const month = now.getMonth() > 9 ? `${now.getMonth() +1}` : `0${now.getMonth() + 1}`
+const date = now.getDate()
+const hours = now.getHours() > 9 ? `${now.getHours()}` : `0${now.getHours()}`
+const minutes = now.getMinutes() > 9 ? `${now.getMinutes()}` : `0${now.getMinutes()}`
 
+const winStringPending = () =>{
+	cards.forEach( card => card.removeEventListener('click',winStringPending))
+	let localObj = {}
+	let winString = setInterval(() => {
+		let localDate = `${date}.${month}.${year} ${hours}:${minutes}`
+		let localTime = `${timer.innerHTML}`
+		let localMoves = `${moves.innerHTML}`
+		if(body.classList.contains('game-win')){ 
+			localObj = {
+				date : localDate,
+				time : localTime,
+				moves : localMoves,
+			}
+			localStorage.setItem(`key${win.innerHTML}`, JSON.stringify(localObj))
+			localStorage.setItem('win', win.innerHTML)
+			clearInterval(winString)
+		}
+	},)
+}
+// const returnObj = JSON.parse(localStorage.getItem("key02"))
+cards.forEach( card => card.addEventListener('click',winStringPending))
+/*-----------------------------score-btn------------------------------------------*/
+const score = document.querySelector('.score__btn')
+const cross = document.querySelector('.table__button')
+const cardTable = document.querySelector('.main__cards')
+const scoreTable = document.querySelector('.main__table')
+const scoreList = document.querySelector('.table__items')
+
+const scoreTableShow = () =>{
+	// localStorage.clear()
+	cardTable.classList.add('display-none');
+	scoreTable.classList.remove('display-none');
+}
+
+const cardsTableShow = () =>{
+	scoreTable.classList.add('display-none');
+	cardTable.classList.remove('display-none');
+}
+
+score.addEventListener('click', scoreTableShow) 
+cross.addEventListener('click', cardsTableShow) 
+/*-----------------------------create score------------------------------------------*/
+
+
+/*-----------------------------nullify score------------------------------------------*/
+
+
+
+
+// body.addEventListener('click', ()=>{
+// 	localStorage.clear()
+// })

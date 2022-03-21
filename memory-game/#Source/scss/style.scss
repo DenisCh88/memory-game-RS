@@ -1,5 +1,6 @@
 @import "nullstyle.scss";
 @import url("https://fonts.googleapis.com/css?family=Monoton:regular,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Teko:regular&display=swap");
 
 body {
    font-family: "Monoton";
@@ -102,8 +103,10 @@ body {
       transition: all 0.3s;
    }
 }
-/*------------------------------------------------------------*/
+/*-----------------------------__items-------------------------------*/
 .main {
+   display: flex;
+   flex-direction: column;
    flex: 1 1 auto;
    min-height: 100%;
    // .main__items
@@ -111,6 +114,8 @@ body {
    &__items {
       max-width: 850px;
       margin: 0 auto;
+      flex: 1 1 auto;
+      min-height: 100%;
    }
 
    // .main__cards
@@ -162,8 +167,10 @@ body {
       }
    }
 }
-.image__display-none {
-   display: none;
+.display-none {
+   visibility: hidden;
+   position: relative;
+   z-index: -100;
 }
 .front-face,
 .back-face {
@@ -174,7 +181,7 @@ body {
    z-index: -10;
    transform: rotateY(180deg);
 }
-/*------------------------------------------------------------*/
+/*------------------------__controls------------------------------------*/
 .main {
    &__controls {
       display: flex;
@@ -218,8 +225,64 @@ body {
    &__btn {
    }
 }
+/*----------------------------score-table-------------------------------*/
+.main {
+   &__container {
+      position: relative;
+   }
+   &__table {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: calc(100% - 50px);
+      display: flex;
+      justify-content: center;
+      margin: 0 auto;
+   }
+}
+.table {
+   // .score__item
 
-/*------------------------------------------------------------*/
+   &__body {
+      width: 450px;
+      background-color: #000000;
+      min-height: 100%;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0px 0px 30px 2px rgb(255, 0, 0);
+      padding: 20px;
+   }
+   &__control {
+      margin: 0px 0px 20px 0px;
+   }
+   &__button {
+      display: flex;
+      justify-content: end;
+      & img {
+         width: 20px;
+         filter: invert(1);
+         transition: all 0.3s;
+         &:hover {
+            transition: all 0.3s;
+            transform: scale(1.1);
+         }
+      }
+   }
+   &__item {
+      font-family: "Teko";
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      font-size: 22px;
+      &:not(:last-child) {
+         margin: 0px 0px 15px 0px;
+      }
+      align-items: center;
+   }
+}
+
+/*--------------------------footer----------------------------------*/
 .footer {
    &__items {
       display: flex;
