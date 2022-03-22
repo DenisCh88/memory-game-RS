@@ -12,8 +12,7 @@ const createScote = () =>{
 		for (let i = 0; i < localStorage.getItem(`win`); i++){
 			let scoreItem = JSON.parse(localStorage.getItem(`key0${i + 1}`));
 
-			scoreItems[i].innerHTML = `Time: ${scoreItem.Time} | Date: ${scoreItem.Date} | Moves: ${scoreItem.Moves}`;
-			console.log(scoreItem.Time)
+			scoreItems[i].innerHTML = `Time: ${scoreItem.time} | Date: ${scoreItem.date} | Moves: ${scoreItem.moves}`;
 		}
 	}
 }
@@ -36,7 +35,7 @@ const randomEighteen = () => {
 		arr2.push(num)
 	  }
 	 }
-	createScote()
+	
 	return res = arr1.concat(arr2);
  }
 
@@ -50,6 +49,7 @@ for(let i = 0; i < el.length; i++){
 	cards[i].setAttribute('data-image', `${el[i]}`);
 	}
 	win.innerHTML = getWinCount === null ? '00' : `${localStorage.getItem('win')}`;
+	createScote()
 }
 
 window.addEventListener('load', createCards(randomEighteen()))
@@ -128,11 +128,11 @@ const unFlipCards = () =>{
 	cards.forEach( card => card.removeEventListener('click', flipCard))
 	setTimeout(() => {
 		cards.forEach( card => card.addEventListener('click', flipCard))
-	}, 400)
+	}, 1000)
 	setTimeout(() => {
 		firstCard.classList.remove('flip')
 		secondCard.classList.remove('flip')
-	}, 400)
+	}, 1000)
 }
 
 const resetBoard = () =>{
@@ -211,6 +211,9 @@ const resetGame = () =>{
 	sec = 0;
 	min = 0;
 	move = 0;
+	winCount = 0;
+	gameWin = false;
+	gameStart = false;
 	timer.innerHTML = '00:00';
 	moves.innerHTML = '00';
 	firstCard = null;
@@ -218,18 +221,26 @@ const resetGame = () =>{
 	cards.forEach( card => card.addEventListener('click',startGame))
 	cards.forEach( card => card.addEventListener('click', flipCard))
 
+	if (body.classList.contains('game-win')){
+		body.classList.remove('game-win')
+	}
+
+	if (localStorage.getItem("win") === 10){
+		localStorage.clear()
+	}
+	
+	winStringPending()
+	setTimeout(() =>{
+		createCards(randomEighteen())
+	}, 250)
+	
+
 	if (localStorage.getItem('win') === null){
 		win.innerHTML = '00'
 	} else {
 		win.innerHTML = `${localStorage.getItem("win")}`
 	}
 	console.log(`${localStorage.getItem('win')}`)
-
-	if (body.classList.contains('game-win')){
-		body.classList.remove('game-win')
-	}
-	winStringPending()
-	createCards(randomEighteen())
 }
 
 
